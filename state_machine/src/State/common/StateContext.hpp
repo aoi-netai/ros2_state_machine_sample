@@ -4,12 +4,11 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
-#include "../../sample_lib/sample_lib.hpp"
 
 // 使用するインスタンス
 struct Instances{
-
-    std::optional<SampleLib> sample_lib;
+    // 必要に応じてここにインスタンスを追加
+    // 例: std::optional<YourClass> your_instance;
 };
 
 // 状態間で共有する変数

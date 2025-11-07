@@ -19,7 +19,6 @@ enum class StateError : uint8_t {
 
     // 200:255 処理を停止すべきエラー(Nullptr参照、センサー異常など)
     SOME_CRITICAL_ERROR = 200,
-    SAMPLE_LIB_NULLPTR_ERROR = 201,
 };
 
 enum class StateChange : uint8_t {

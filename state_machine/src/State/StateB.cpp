@@ -5,8 +5,8 @@ StateResult StateB::onUpdate(StateContext& context) {
     static uint16_t loop_counter = 0;
     loop_counter++;
     
-    // SampleLibのデータを取得して確認する
-    context.instances.sample_lib->getData();
+    // State Bの処理（必要に応じて実装）
+    // 例: context.instances.your_instance->someMethod();
 
     if(loop_counter > 2) {
 

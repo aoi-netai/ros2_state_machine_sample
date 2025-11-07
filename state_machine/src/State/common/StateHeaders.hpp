@@ -20,8 +20,6 @@
 #include "StateBase/InitStateBase.hpp"
 #include "StateBase/ProcessStateBase.hpp"
 
-#include "../../sample_lib/sample_lib.hpp"
-
 class StateA : public InitStateBase {
 
     protected:
