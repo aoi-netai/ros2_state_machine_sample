@@ -34,3 +34,12 @@ source install/setup.bash
 ros2 topic list
 ros2 topic echo /state_machine_log
 ```
+
+### 4. ロボットアームのサンプルノード
+```
+cd RobotArm
+. /opt/ros/humble/setup.bash
+colcon build --build-base build --install-base install
+source install/setup.bash
+./install/robot_arm/lib/robot_arm/robot_arm_node
+```

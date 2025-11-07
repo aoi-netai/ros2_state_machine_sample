@@ -36,14 +36,18 @@ class StateMachineNode : public rclcpp::Node {
             // 状態遷移が発生した場合、ログを出力
             if (status.has_state_changed) {
                 auto log_msg = std_msgs::msg::String();
-                log_msg.data = "[StateChange] Transitioned to: " + 
-                               std::string(StateIDToString(status.current_state));
+                log_msg.data = "[StateChange] Transitioned to: " + std::string(StateIDToString(status.current_state));
                 log_publisher_->publish(log_msg);
             }
         }
 
+        // StateManagerのインスタンス
         std::unique_ptr<StateManager> state_manager_;
+
+        // ログパブリッシャー
         rclcpp::Publisher<std_msgs::msg::String>::SharedPtr log_publisher_;
+
+        // タイマー
         rclcpp::TimerBase::SharedPtr timer_;
 };
 
