@@ -8,67 +8,72 @@
 class RobotArmNode : public rclcpp::Node {
 public:
     RobotArmNode() : Node("robot_arm_node") {
+
         arm_ = std::make_unique<RobotArmMock>();
         
-        // 状態パブリッシャー
-        state_publisher_ = this->create_publisher<std_msgs::msg::String>(
-            "robot_arm/state",
-            rclcpp::SensorDataQoS()
+        // コマンドサブスクライバー
+        command_subscriber_ = this->create_subscription<std_msgs::msg::String>(
+            "robot_arm/command",
+            10,
+            std::bind(&RobotArmNode::commandCallback, this, std::placeholders::_1)
         );
         
-        // エンドエフェクタ位置パブリッシャー
-        pose_publisher_ = this->create_publisher<geometry_msgs::msg::PoseStamped>(
-            "robot_arm/end_effector_pose",
-            rclcpp::SensorDataQoS()
-        );
-        
-        // ライフサイクルコマンド実行
-        timer_ = this->create_wall_timer(
-            std::chrono::milliseconds(3000),
-            std::bind(&RobotArmNode::timerCallback, this)
-        );
+        // 定期的な状態パブリッシュ用タイマー
+        timer_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotArmNode::timerCallback, this));
         
         RCLCPP_INFO(this->get_logger(), "Robot Arm Node started");
     }
     
 private:
-    void timerCallback() {
-        static int step = 0;
+
+    void commandCallback(const std_msgs::msg::String::SharedPtr msg) {
+        std::string command = msg->data;
+        RCLCPP_INFO(this->get_logger(), "Received command: %s", command.c_str());
         
-        switch (step) {
-            case 0:
-                RCLCPP_INFO(this->get_logger(), "Step 1: INIT");
-                arm_->executeCommand(ArmCommand::INIT);
-                break;
-            case 1:
-                RCLCPP_INFO(this->get_logger(), "Step 2: HOME");
-                arm_->executeCommand(ArmCommand::HOME);
-                break;
-            case 2:
-                RCLCPP_INFO(this->get_logger(), "Step 3: MOVE");
-                arm_->executeCommand(ArmCommand::MOVE);
-                break;
-            case 3:
-                RCLCPP_INFO(this->get_logger(), "Step 4: SHUTDOWN");
-                arm_->executeCommand(ArmCommand::SHUTDOWN);
-                rclcpp::shutdown();
-                return;
+        if (command == "INIT") {
+
+            arm_->executeCommand(ArmCommand::INIT);
+        } 
+        else if (command == "HOME") {
+
+            arm_->executeCommand(ArmCommand::HOME);
+        } 
+        else if (command == "MOVE") {
+
+            arm_->executeCommand(ArmCommand::MOVE);
+        } 
+        else if (command == "SHUTDOWN") {
+
+            arm_->executeCommand(ArmCommand::SHUTDOWN);
+            RCLCPP_INFO(this->get_logger(), "Shutting down robot arm node...");
+            rclcpp::shutdown();
+        } 
+        else {
+
+            RCLCPP_WARN(this->get_logger(), "Unknown command: %s", command.c_str());
+            return;
         }
         
-        step++;
+
+    }
+    
+    void timerCallback() {
+
+        // 定期的に状態とポーズをパブリッシュ
         publishState();
         publishPose();
     }
     
     void publishState() {
+
         auto msg = std_msgs::msg::String();
         ArmState state = arm_->getState();
-        msg.data = "[State] Initialized: " + std::string(state.initialized ? "true" : "false") +
-                   ", At Home: " + std::string(state.at_home ? "true" : "false");
+        msg.data = "[State] Initialized: " + std::string(state.initialized ? "true" : "false") + ", At Home: " + std::string(state.at_home ? "true" : "false");
         state_publisher_->publish(msg);
     }
     
     void publishPose() {
+
         double x, y, z;
         ArmState state = arm_->getState();
         
@@ -95,13 +100,18 @@ private:
     std::unique_ptr<RobotArmMock> arm_;
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr state_publisher_;
     rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pose_publisher_;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr command_subscriber_;
     rclcpp::TimerBase::SharedPtr timer_;
 };
 
 int main(int argc, char* argv[]) {
+
     rclcpp::init(argc, argv);
+
     auto node = std::make_shared<RobotArmNode>();
+
     rclcpp::spin(node);
+
     rclcpp::shutdown();
     return 0;
 }
