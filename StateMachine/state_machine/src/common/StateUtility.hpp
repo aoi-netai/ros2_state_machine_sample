@@ -5,23 +5,22 @@
 
 // 状態IDの定義
 enum class StateID : uint8_t {
+
     STATE_A,
     STATE_B,
     STATE_C,
+    STATE_D,
+    STATE_E,
 };
 
-// 状態エラーの定義
+// 状態エラー
 enum class StateError : uint8_t {
 
     NONE = 0,
-
-    // 10:199 次のループで再処理を行うべき変化（初期の通信待ち、センサーデータの取得）
-
-    // 200:255 処理を停止すべきエラー(Nullptr参照、センサー異常など)
-    SOME_CRITICAL_ERROR = 200,
-    SAMPLE_LIB_NULLPTR_ERROR = 201,
+    SOME_CRITICAL_ERROR = 255,
 };
 
+// 状態遷移の有無
 enum class StateChange : uint8_t {
 
     NO_STATE_CHANGE = 0,
@@ -32,12 +31,13 @@ enum class StateChange : uint8_t {
 struct StateResult {
 
     StateChange state_change = StateChange::NO_STATE_CHANGE;
-    StateID next_state;
-    StateError error;
+    StateID next_state = StateID::STATE_A;
+    StateError error = StateError::NONE;
 };
 
 // StateIDを文字列に変換するヘルパー関数
 inline const char* StateIDToString(StateID state_id) {
+
     switch (state_id) {
         case StateID::STATE_A:
             return "STATE_A";
@@ -45,6 +45,10 @@ inline const char* StateIDToString(StateID state_id) {
             return "STATE_B";
         case StateID::STATE_C:
             return "STATE_C";
+        case StateID::STATE_D:
+            return "STATE_D";
+        case StateID::STATE_E:
+            return "STATE_E";
         default:
             return "UNKNOWN";
     }

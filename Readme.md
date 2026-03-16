@@ -1,36 +1,37 @@
 
+# ROS2 State Machine
 
-## ファイル（ノード）について
+## 最小限の実行コマンド
 
-### 前提条件
-- ROS2 Humble がインストール済みであること
-- このリポジトリをクローン後、リポジトリルートから実行してください
-
-### 実行方法
-
-**注意: LogReceiver は StateManager よりも先に起動してください。**
-
-#### 1. LogReceiver（ターミナル 1）StateManagerの現在状態を表示
 ```bash
-cd ROS2_STATE_MACHINE/LogReceiver/log_receiver
-. /opt/ros/humble/setup.bash
-colcon build --build-base build --install-base install
-source install/setup.bash
-./install/log_receiver/lib/log_receiver/log_receiver_node
+cd /workspaces/ros2_docker_test && source /opt/ros/humble/setup.bash && colcon build --packages-select state_machine && source install/setup.bash && ros2 run state_machine state_machine_node
 ```
 
-#### 2. StateManager（ターミナル 2）状態管理や処理を行う部分
+## ステップバイステップ実行
+
+### 1. ビルド
 ```bash
-cd ROS2_STATE_MACHINE/StateMachine/state_machine
-. /opt/ros/humble/setup.bash
-colcon build --build-base build --install-base install
-source install/setup.bash
-./install/state_machine/lib/state_machine/state_machine_node
+cd /workspaces/ros2_docker_test
+source /opt/ros/humble/setup.bash
+colcon build --packages-select state_machine
 ```
 
-#### 3. トピック確認（ターミナル 3 - オプション）
+### 2. 環境セットアップ
 ```bash
-. /opt/ros/humble/setup.bash
-ros2 topic list
-ros2 topic echo /state_machine_log
+source install/setup.bash
+```
+
+### 3. ノード実行
+```bash
+ros2 run state_machine state_machine_node
+```
+
+## クリーンビルド
+```bash
+cd /workspaces/ros2_docker_test && rm -rf build install log && source /opt/ros/humble/setup.bash && colcon build --packages-select state_machine
+```
+
+## 直接実行（ビルド後）
+```bash
+/workspaces/ros2_docker_test/install/state_machine/lib/state_machine/state_machine_node
 ```

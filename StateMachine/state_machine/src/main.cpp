@@ -4,7 +4,6 @@
 #include <memory>
 #include <cstdio>
 #include "StateManager/StateManager.hpp"
-#include "StateManager/StateManagerUtility.hpp"
 
 // ROS2ノードクラス
 class StateMachineNode : public rclcpp::Node {
@@ -30,16 +29,9 @@ class StateMachineNode : public rclcpp::Node {
     private:
 
         void timerCallback() {
-            // StateManagerの更新
-            StateManagerStatus status = state_manager_->update();
 
-            // 状態遷移が発生した場合、ログを出力
-            if (status.has_state_changed) {
-                auto log_msg = std_msgs::msg::String();
-                log_msg.data = "[StateChange] Transitioned to: " + 
-                               std::string(StateIDToString(status.current_state));
-                log_publisher_->publish(log_msg);
-            }
+            // StateManagerの更新
+            state_manager_->update();
         }
 
         std::unique_ptr<StateManager> state_manager_;
@@ -51,7 +43,6 @@ class StateMachineNode : public rclcpp::Node {
 int main(int argc, char* argv[]) {
 
     printf("Starting State Machine Node...\n");
-    // ROS2 の初期化
     rclcpp::init(argc, argv);
 
     // ノードの作成と実行

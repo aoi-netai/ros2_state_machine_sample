@@ -12,11 +12,11 @@ find_package(std_msgs REQUIRED)
 set(STATE_MACHINE_SOURCES
   src/main.cpp
   src/StateManager/StateManager.cpp
-  src/State/StateA.cpp
-  src/State/StateB.cpp
-  src/State/StateC.cpp
-  src/State/common/StateBase/InitStateBase.cpp
-  src/State/common/StateBase/ProcessStateBase.cpp
+  src/State/FirstGroup/StateA.cpp
+  src/State/FirstGroup/StateB.cpp
+  src/State/FirstGroup/StateC.cpp
+  src/State/SecondGroup/StateD.cpp
+  src/State/SecondGroup/StateE.cpp
 )
 
 # ステートマシンノードの実行ファイル
