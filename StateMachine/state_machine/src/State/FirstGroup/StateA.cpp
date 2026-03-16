@@ -1,5 +1,4 @@
 #include "StateHeaders.hpp"
-#include <cstdio>
 
 StateError StateA::init(StateContext& context) {
 
