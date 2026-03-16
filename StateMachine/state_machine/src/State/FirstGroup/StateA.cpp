@@ -9,7 +9,12 @@ StateResult StateA::update(StateContext& context) {
 
     static uint16_t loop_counter = 0;
     loop_counter++;
+    
+    if(loop_counter > 1) {
 
-    // 処理を1回したら状態をBに変更
-    return {StateChange::STATE_CHANGE, StateID::STATE_B, StateError::NONE};
+        loop_counter = 0;
+        return {StateChange::STATE_CHANGE, StateID::STATE_B, StateError::NONE};
+    }
+
+    return {StateChange::NO_STATE_CHANGE, StateID::STATE_A, StateError::NONE};
 }
